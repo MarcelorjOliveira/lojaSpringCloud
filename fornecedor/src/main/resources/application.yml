@@ -1,0 +1,15 @@
+
+server:
+  port: 8081
+  
+spring:
+  jpa:
+    hibernate:
+      ddl-auto: create
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQL5Dialect
+  datasource:
+    url: jdbc:mysql://14.5.0.5:3306/fornecedor
+    username: root
+    password: local 
