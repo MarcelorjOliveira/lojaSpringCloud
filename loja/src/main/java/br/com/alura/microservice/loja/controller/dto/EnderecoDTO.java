@@ -31,4 +31,9 @@ public class EnderecoDTO {
 	public void setEstado(String estado) {
 		this.estado = estado;
 	}
+	
+	@Override
+	public String toString() {
+		return "Endereco : " + super.toString();
+	}	
 }
