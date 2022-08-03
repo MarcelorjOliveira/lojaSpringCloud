@@ -10,6 +10,7 @@ import br.com.alura.microservice.loja.controller.dto.CompraDTO;
 import br.com.alura.microservice.loja.dto.InfoFornecedorDTO;
 import br.com.alura.microservice.loja.dto.InfoPedidoDTO;
 import br.com.alura.microservice.loja.model.Compra;
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 
 @Service
 public class CompraService {
@@ -20,14 +21,21 @@ public class CompraService {
 	private static final Logger LOG = LoggerFactory.getLogger(CompraService.class);
 	
 	/*
-	
 	@Autowired
 	private RestTemplate client;
 	
 	@Autowired
 	private DiscoveryClient eurekaClient;
 	*/
+
+	public Compra realizaCompraFallback(CompraDTO compra, Exception e) {
+		Compra compraFallback = new Compra();
+		compraFallback.setEnderecoDestino(compra.getEndereco().toString());
+		return compraFallback;
+	}
 	
+	@CircuitBreaker( name = "realizaCompraCircuitBreaker", fallbackMethod = "realizaCompraFallback")
+	//@TimeLimiter( name = "realizaCompraTimeLimiter", fallbackMethod = "realizaCompraFallback")
 	public Compra realizaCompra(CompraDTO compra) {		
 		
 		final String estado = compra.getEndereco().getEstado();
@@ -40,13 +48,21 @@ public class CompraService {
 		
 		InfoPedidoDTO pedido = fornecedorClient.realizaPedido(compra.getItens());
 	
+		//if(1==1) throw new RuntimeException();
+		
 		System.out.println(info.getEndereco());
 		
 		Compra compraSalva = new Compra();
 		compraSalva.setPedidoId(pedido.getId());
 		compraSalva.setTempoDePreparo(pedido.getTempoDePreparo());
-		compraSalva.setEnderecoDestino(compra.getEndereco().toString());
-	
+		compraSalva.setEnderecoDestino(compra.getEndereco().toString()); 
+		
+		//try {
+		//	Thread.sleep(10000);
+		//} catch (InterruptedException e) {
+		//	e.printStackTrace();
+		//}
+		
 		return compraSalva;
 		/*
 		ResponseEntity<InfoFornecedorDTO> exchange = client.exchange("http://fornecedor/info/"+compra.getEndereco().getEstado(), HttpMethod.GET, null, InfoFornecedorDTO.class);
@@ -57,5 +73,5 @@ public class CompraService {
 		System.out.println(exchange.getBody().getEndereco() );
 		*/
 	}
-
+	
 }

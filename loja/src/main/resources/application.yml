@@ -2,6 +2,9 @@ spring:
   application:
     name: 'loja'
 
+server:
+  port: 8080
+  
 eureka:
   client:
     register-with-eureka: true
@@ -9,3 +12,11 @@ eureka:
     service-url:
       defaultZone: http://localhost:8761/eureka
       
+resilience4j.circuitbreaker:
+  instances:
+    realizaCompraCircuitBreaker:
+      registerHealthIndicator: true
+      ringBufferSizeInClosedState: 1 # after 7 hits circuit will be opened
+      ringBufferSizeInHalfOpenState: 1
+      waitDurationInOpenState: 1s # 30 seconds is the lockin period once the circuit is open
+      failureRateThreshold: 100
