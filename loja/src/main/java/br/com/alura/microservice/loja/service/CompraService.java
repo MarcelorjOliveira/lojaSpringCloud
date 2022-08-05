@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import br.com.alura.microservice.loja.client.FornecedorClient;
 import br.com.alura.microservice.loja.controller.dto.CompraDTO;
+import br.com.alura.microservice.loja.controller.repository.CompraRepository;
 import br.com.alura.microservice.loja.dto.InfoFornecedorDTO;
 import br.com.alura.microservice.loja.dto.InfoPedidoDTO;
 import br.com.alura.microservice.loja.model.Compra;
@@ -17,6 +18,9 @@ public class CompraService {
 
 	@Autowired
 	private FornecedorClient fornecedorClient;
+	
+	@Autowired
+	private CompraRepository compraRepository;
 	
 	private static final Logger LOG = LoggerFactory.getLogger(CompraService.class);
 	
@@ -57,6 +61,8 @@ public class CompraService {
 		compraSalva.setTempoDePreparo(pedido.getTempoDePreparo());
 		compraSalva.setEnderecoDestino(compra.getEndereco().toString()); 
 		
+		compraRepository.save(compraSalva);
+		
 		//try {
 		//	Thread.sleep(10000);
 		//} catch (InterruptedException e) {
@@ -72,6 +78,10 @@ public class CompraService {
 		});		
 		System.out.println(exchange.getBody().getEndereco() );
 		*/
+	}
+
+	public Compra getById(Long id) {
+		return compraRepository.findById(id).orElse(new Compra());
 	}
 	
 }

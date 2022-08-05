@@ -7,4 +7,4 @@ spring:
       server:
         git:
           uri: https://github.com/MarcelorjOliveira/lojaSpringCloud
-          search-paths: config-server/fornecedor
+          search-paths: config-server/fornecedor, config-server/loja
