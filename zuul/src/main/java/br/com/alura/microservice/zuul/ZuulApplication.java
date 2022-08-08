@@ -14,12 +14,16 @@ public class ZuulApplication {
 	}	
 	
 	@Bean
-	public RouteLocator myRouter(RouteLocatorBuilder builder) {
+	public RouteLocator lojaRouter(RouteLocatorBuilder builder) {
 		return builder.routes()
 			.route(p -> p
-				.path("/get")
-				.filters(f -> f.addRequestHeader("Hello", "world"))
-				.uri("http://httpbin.org:80")
+				.path("/fornecedor/**")
+				.filters(f -> f.rewritePath("/fornecedor/(?<segment>.*)", "/${segment}"))
+				.uri("http://localhost:8081")
+			)
+			.route(p -> p
+				.path("/loja/**")
+				.uri("http://localhost:8080")
 			)
 			.build();
 	}
