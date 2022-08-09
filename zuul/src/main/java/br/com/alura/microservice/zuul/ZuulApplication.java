@@ -23,6 +23,7 @@ public class ZuulApplication {
 			)
 			.route(p -> p
 				.path("/loja/**")
+				.filters(f->f.rewritePath("/loja/(?<segment>.*)", "/${segment}"))
 				.uri("http://localhost:8080")
 			)
 			.build();
